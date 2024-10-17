@@ -68,7 +68,7 @@ def enregistrer_client():
     prenom = request.form['prenom']
 
     @app.route('/fiche_nom/<string:id>')
-def Readfiche(id):
+def fiche_nom(id):
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM clients WHERE nom = ?', (id,))
