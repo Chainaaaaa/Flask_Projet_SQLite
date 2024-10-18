@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire d'enregistrement d'un nouvelle emprunt</title>
+</head>
+<body>
+    <h1>Enregistrer un nouvelle emprunt</h1>
+    <form action="./enregistrer_emprunt" method="POST">
+        <label for="id_client">ID du client :</label>
+        <input type="text" id="id_client" name="id_client" required><br><br>
+        <label for="id_livre">ID du livre :</label>
+        <input type="text" id="id_livre" name="id_livre" required><br><br>
+        <button type="submit">Enregistrer</button>
+    </form>
+</body>
+</html>
