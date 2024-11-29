@@ -101,5 +101,19 @@ def enregistrer_livre():
     # Rediriger vers la page de consultation des livres après l'enregistrement
     return redirect('/consultation_livres')
 
+@app.route('/supprimer_livre/<int:id>', methods=['GET'])
+def supprimer_livre(id):
+    # Connexion à la base de données
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    # Exécution de la requête SQL pour supprimer le livre avec l'ID donné
+    cursor.execute('DELETE FROM livres WHERE id = ?', (id,))
+    conn.commit()
+    conn.close()
+
+    # Rediriger vers la page de consultation des livres après la suppression
+    return redirect('/consultation_livres')
+
 if __name__ == "__main__":
   app.run(debug=True)
