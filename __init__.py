@@ -69,25 +69,6 @@ def ReadBDD():
     conn.close()
     return render_template('read_data.html', data=data)
 
-@app.route('/enregistrer_client', methods=['GET'])
-def formulaire_client():
-    return render_template('formulaire.html')  # afficher le formulaire
-
-@app.route('/enregistrer_client', methods=['POST'])
-def enregistrer_client():
-    nom = request.form['nom']
-    prenom = request.form['prenom']
-
-    # Connexion à la base de données
-    conn = sqlite3.connect('database.db')
-    cursor = conn.cursor()
-
-    # Exécution de la requête SQL pour insérer un nouveau client
-    cursor.execute('INSERT INTO clients (nom, prenom, adresse) VALUES (?, ?, ?)', (nom, prenom, "ICI"))
-    conn.commit()
-    conn.close()
-    return redirect('/consultation/')  # Rediriger vers la page d'accueil après l'enregistrement
-
 @app.route('/supprimer_client/<int:id>')
 def supprimer_client(id):
     conn = sqlite3.connect('database.db')
@@ -120,21 +101,8 @@ def BDD_livre():
     data = cursor.fetchall()
     conn.close()
     return render_template('read_livre.html', data=data)
+@app.route('/enregistrer_livre', methods=['GET', 'POST'])
 
-@app.route('/enregistrer_livre', methods=['GET'])
-def formulaire_livre():
-    return render_template('formulaire_livre.html')  # afficher le formulaire
-
-@app.route('/enregistrer_livre', methods=['POST'])
-def enregistrer_livre():
-    nom = request.form['nom']
-    auteur = request.form['auteur']
-
-    # Connexion à la base de données
-    conn = sqlite3.connect('database.db')
-    cursor = conn.cursor()
-
-    @app.route('/enregistrer_livre', methods=['GET', 'POST'])
 def enregistrer_livre():
     if request.method == 'POST':
         titre = request.form['titre']
@@ -155,12 +123,6 @@ def enregistrer_livre():
         return redirect('/livres')  
 
     return render_template('formulaire_livre.html')
-    
-    # Exécution de la requête SQL pour insérer un nouveau client
-    cursor.execute('INSERT INTO livres (nom,auteur) VALUES (?,?)', (nom,auteur))
-    conn.commit()
-    conn.close()
-    return redirect('/consultation_livre/')
 
 @app.route('/supprimer_livre/<int:id>')
 def supprimer_livre(id):
