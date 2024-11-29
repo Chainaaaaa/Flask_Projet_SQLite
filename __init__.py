@@ -94,7 +94,7 @@ def enregistrer_livre():
     cursor = conn.cursor()
 
     # Exécution de la requête SQL pour insérer un nouveau livre
-    cursor.execute('INSERT INTO livres (titre, auteur, stock) VALUES (?, ?, ?)', (titre, auteur, stock))
+    cursor.execute('INSERT INTO books (titre, auteur, stock) VALUES (?, ?, ?)', (titre, auteur, stock))
     conn.commit()
     conn.close()
 
@@ -108,7 +108,7 @@ def supprimer_livre(id):
     cursor = conn.cursor()
 
     # Exécution de la requête SQL pour supprimer le livre avec l'ID donné
-    cursor.execute('DELETE FROM livres WHERE id = ?', (id,))
+    cursor.execute('DELETE FROM books WHERE id = ?', (id,))
     conn.commit()
     conn.close()
 
