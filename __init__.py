@@ -76,98 +76,30 @@ def enregistrer_client():
     conn.commit()
     conn.close()
     return redirect('/consultation/')  # Rediriger vers la page d'accueil après l'enregistrement
-                                                                                                
+
+
+@app.route('/enregistrer_livre', methods=['GET'])
+def formulaire_livre():
+    return render_template('formulaire_livre.html')
+
+@app.route('/enregistrer_livre', methods=['POST'])
+def enregistrer_livre():
+    # Récupérer les données du formulaire
+    titre = request.form['titre']
+    auteur = request.form['auteur']
+    stock = request.form['stock']
+
+    # Connexion à la base de données
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    # Exécution de la requête SQL pour insérer un nouveau livre
+    cursor.execute('INSERT INTO livres (titre, auteur, stock) VALUES (?, ?, ?)', (titre, auteur, stock))
+    conn.commit()
+    conn.close()
+
+    # Rediriger vers la page de consultation des livres après l'enregistrement
+    return redirect('/consultation_livres')
+
 if __name__ == "__main__":
   app.run(debug=True)
-
-from flask import Flask, jsonify, request
-import sqlite3
-
-app = Flask(__name__)
-app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'  # Clé secrète pour les sessions
-
-# Helper pour la connexion à la base de données
-def get_db_connection():
-    conn = sqlite3.connect('database.db')
-    conn.row_factory = sqlite3.Row  # Pour un accès par clé
-    return conn
-
-# Créer la table 'books' si elle n'existe pas déjà
-def create_books_table():
-    conn = get_db_connection()
-    conn.execute('''
-        CREATE TABLE IF NOT EXISTS books (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL,
-            author TEXT NOT NULL,
-            year INTEGER
-        )
-    ''')
-    conn.commit()
-    conn.close()
-
-# Route pour récupérer tous les livres
-@app.route('/api/books', methods=['GET'])
-def get_books():
-    conn = get_db_connection()
-    books = conn.execute('SELECT * FROM books').fetchall()
-    conn.close()
-
-    books_list = [dict(book) for book in books]
-    return jsonify(books_list)
-
-# Route pour récupérer un livre par ID
-@app.route('/api/books/<int:id>', methods=['GET'])
-def get_book(id):
-    conn = get_db_connection()
-    book = conn.execute('SELECT * FROM books WHERE id = ?', (id,)).fetchone()
-    conn.close()
-
-    if book is None:
-        return jsonify({"error": "Book not found"}), 404
-
-    return jsonify(dict(book))
-
-# Route pour ajouter un nouveau livre
-@app.route('/api/books', methods=['POST'])
-def add_book():
-    data = request.get_json()
-
-    # Vérification des données
-    if 'title' not in data or 'author' not in data or 'year' not in data:
-        return jsonify({"error": "Invalid data"}), 400
-
-    title = data['title']
-    author = data['author']
-    year = data['year']
-
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('INSERT INTO books (title, author, year) VALUES (?, ?, ?)',
-                   (title, author, year))
-    conn.commit()
-    conn.close()
-
-    return jsonify({"message": "Book added successfully"}), 201
-
-# Route pour supprimer un livre par ID
-@app.route('/api/books/<int:id>', methods=['DELETE'])
-def delete_book(id):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM books WHERE id = ?', (id,))
-    book = cursor.fetchone()
-
-    if book is None:
-        conn.close()
-        return jsonify({"error": "Book not found"}), 404
-
-    cursor.execute('DELETE FROM books WHERE id = ?', (id,))
-    conn.commit()
-    conn.close()
-
-    return jsonify({"message": "Book deleted successfully"}), 200
-
-if __name__ == "__main__":
-    create_books_table()  # Créer la table si elle n'existe pas
-    app.run(debug=True)
