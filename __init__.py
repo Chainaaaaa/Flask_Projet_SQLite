@@ -134,6 +134,28 @@ def enregistrer_livre():
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
 
+    @app.route('/enregistrer_livre', methods=['GET', 'POST'])
+def enregistrer_livre():
+    if request.method == 'POST':
+        titre = request.form['titre']
+        auteur = request.form['auteur']
+        genre = request.form['genre']
+        date_publication = request.form['date_publication']
+        quantite = request.form['quantite']
+
+        
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+
+       
+        cursor.execute('INSERT INTO Bibliotheque (titre, auteur, genre, date_publication, quantite) VALUES (?, ?, ?, ?, ?)',
+                       (titre, auteur, genre, date_publication, quantite))
+        conn.commit()
+        conn.close()
+        return redirect('/livres')  
+
+    return render_template('formulaire_livre.html')
+    
     # Exécution de la requête SQL pour insérer un nouveau client
     cursor.execute('INSERT INTO livres (nom,auteur) VALUES (?,?)', (nom,auteur))
     conn.commit()
