@@ -6,21 +6,23 @@ CREATE TABLE clients (
     prenom TEXT NOT NULL,
     adresse TEXT NOT NULL
 );
-DROP TABLE IF EXISTS books;
-CREATE TABLE books (
+
+DROP TABLE IF EXISTS livres;
+CREATE TABLE livres (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT,
-    author TEXT,
-    stock INTEGER
+    nom TEXT NOT NULL,
+    auteur TEXT NOT NULL,
+    quantite INTEGER NOT NULL DEFAULT 1
 );
 
-DROP TABLE IF EXISTS emprunts; 
+DROP TABLE IF EXISTS emprunts;
 CREATE TABLE emprunts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    clients_id INTEGER,
-    book_id INTEGER,
-    date_emprunt TEXT,
-    date_retour TEXT,
-    FOREIGN KEY (clients_id) REFERENCES clients(id),
-    FOREIGN KEY (book_id) REFERENCES books(id)
+    id_client INTEGER NOT NULL,
+    id_livre INTEGER NOT NULL,
+    date_debut TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    date_fin TIMESTAMP,
+    state INTEGER NOT NULL,
+    FOREIGN KEY (id_client) REFERENCES clients(id),
+    FOREIGN KEY (id_livre) REFERENCES livres(id)
 );
